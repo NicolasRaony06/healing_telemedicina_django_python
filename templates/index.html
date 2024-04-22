@@ -1,0 +1,37 @@
+{% extends "base.html" %}
+
+{% block 'head' %}
+    <style>
+        body {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            background-color: #f0f0f0; 
+            font-family: Arial, sans-serif;
+        }
+
+        h1 {
+            text-align: center;
+        }
+
+        a {
+            text-decoration: none;
+            color: #007bff;
+            font-size: 3em;
+            margin-top: 20px;
+        }
+    </style>
+{% endblock 'head' %}
+
+
+
+{% block 'body' %}
+    <br>
+    <h1 style="text-align: center;">Site de Telemedicina - Healing</h1>
+    <br><br>
+    <a style="font-size: 3em;" href="{% url "login" %}">Login</a>
+{% endblock 'body' %}
+     
