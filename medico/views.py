@@ -87,3 +87,32 @@ def consultas_medico(request):
     consultas_restantes = Consulta.objects.exclude(id__in=consultas_hoje.values('id'))
 
     return render(request, 'consultas_medico.html', {'consultas_hoje': consultas_hoje, 'consultas_restantes': consultas_restantes, 'is_medico': is_medico(request.user)})
+
+def consulta_area_medico(request, id_consulta):
+    if not is_medico(request.user):
+        add_message(request, constants.WARNING, 'Somente médicos podem acessar essa página.')
+        return redirect('/usuarios/sair')
+    
+    if request.method == 'GET':
+        consulta = Consulta.objects.get(id=id_consulta)
+        return render(request, 'consulta_area_medico.html', {'consulta': consulta})
+    
+    if request.method == 'POST':
+        consulta = Consulta.objects.get(id=id_consulta)
+        link = request.POST.get('link')
+
+        if consulta.status == 'C':
+            add_message(request, constants.WARNING, 'Esta consulta foi cancelada!')
+            return redirect(f'/medicos/consulta_area_medico/{id_consulta}/')
+        elif consulta.status == 'F':
+            add_message(request, constants.WARNING, 'Esta consulta já foi finalizada!')
+            return redirect(f'/medicos/consulta_area_medico/{id_consulta}/')
+
+        consulta.link = link
+        consulta.status = 'I'
+
+        consulta.save()
+
+        add_message(request, constants.SUCCESS, 'Consulta Inicializada')
+
+        return redirect(f'/medicos/consulta_area_medico/{id_consulta}/')
