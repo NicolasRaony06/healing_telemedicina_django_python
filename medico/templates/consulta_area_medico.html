@@ -80,17 +80,22 @@
             </div>
             <div class="col-md">
                 <h3 class="p-bold">Documentos do paciente</h3>
-                <form action="" method="POST" enctype="multipart/form-data">
-                    <input type="text" name="titulo" class="form-control" placeholder="Titulo ...">
+                <form action="{% url "add_documento" consulta.id %}" method="POST" enctype="multipart/form-data"> {% csrf_token %}
+                    <input type="text" name="titulo" class="form-control" placeholder="Titulo" required>
                     <br>
                     <input type="file" name="documento" class="form-control">
                     <br>
                     <input type="submit" class="btn btn-dark-color-outline btn-lg" value="+">
                 </form>
                 <hr>
+                {% if documentos %}
+                    {% for documento in documentos  %}
+                         <a href="{{documento.documento.url}}" target="_blank"><p class="badge bg-secondary" style="font-size:1em;">{{documento.titulo}}</p></a>
+                    {% endfor %}
+                {% endif %}
                 <br>
                 <hr>
-                <a href="" class="btn btn-primary">Finalizar consulta</a>
+                <a href="{% url "finalizar_consulta" consulta.id %}" class="btn btn-primary">Finalizar consulta</a>
             </div>
         </div>
     </div>

@@ -38,16 +38,26 @@
                         <img src="{{dado_medico.foto.url}}" class="foto-perfil-card-lg" alt="">
                     </div>
                     <div class="col-md">
+                        {% if messages %}
+                            {% for message in messages %}
+                                <div class="alert {{message.tags}}">
+                                    {{message}}
+                                </div>
+                            {% endfor %}
+                        
+                        {% endif %}
+
                         <p style="font-size: 20px" class="p-bold">Dr(a). {{dado_medico.nome}} <i class="bi bi-patch-check-fill icon-main"></i></p>
                         <p>{{dado_medico.descricao}}</p>
                         <p class="p-bold">{{consulta.data_aberta.data}}</p>
+                        <a href="{% url "cancelar_consulta_paciente" consulta.id %}" class="btn btn-success btn-dark-color btn-lg">Cancelar Consulta</a>
                     </div>
                 </div>
                 <hr>
                 <br>
                 <div class="row">
                     <div class="col-md">
-                        <p><i class="color-dark bi bi-check-circle-fill"></i> Consulta agendada</p>
+                        <p><i class="{% if consulta.status != 'C' %} color-dark {% endif %} bi bi-check-circle-fill"></i> Consulta agendada</p>
                     </div>
                     <div class="col-md">
                         <p><i class="{% if consulta.status == 'F' %} color-dark {% endif %} bi bi-check-circle-fill"></i> Consulta realizada</p>
@@ -80,6 +90,11 @@
                 <hr>
                 <h3 class="p-bold">Meus documentos</h3>
                 <br>
+                {% if documentos %}
+                    {% for documento in documentos %}
+                         <a href="{{documento.documento.url}}" target="_blank"><p class="badge bg-secondary" style="font-size:1em;">{{documento.titulo}}</p></a>
+                    {% endfor %}
+                {% endif %}
                 <br>
                 <br>
                 <br>

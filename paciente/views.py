@@ -2,7 +2,7 @@ from django.shortcuts import render, redirect
 from django.http import HttpResponse
 from medico.models import DadosMedico, Especialidades, DatasAbertas, is_medico
 from datetime import datetime, timedelta
-from .models import Consulta
+from .models import Consulta, Documento
 from django.contrib.messages import constants, add_message
 
 def home(request):
@@ -56,5 +56,22 @@ def consulta(request, id_consulta):
     if request.method == 'GET':
         consulta =  Consulta.objects.get(id=id_consulta)
         dado_medico = DadosMedico.objects.get(user=consulta.data_aberta.user)
+        documentos = Documento.objects.filter(consulta=consulta)
 
-        return render(request, 'consulta.html', {'consulta': consulta, 'dado_medico': dado_medico})
+        return render(request, 'consulta.html', {'consulta': consulta, 'dado_medico': dado_medico, 'documentos': documentos})
+    
+def cancelar_consulta_paciente(request, id_consulta):
+    consulta = Consulta.objects.get(id=id_consulta)
+
+    if request.user.id != consulta.paciente.id:
+        add_message(request, constants.ERROR, 'Esta consulta não pertence a você!')
+        return redirect(f'/pacientes/consulta/{id_consulta}/')
+    
+    consulta.status = 'C'
+    consulta.save()
+    
+    return redirect(f"/pacientes/consulta/{id_consulta}/")
+    
+
+    
+
