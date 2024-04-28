@@ -62,9 +62,13 @@
             </div>
             <div class="col-md-4">
                 <p style="font-size: 25px" class="p-bold">Lembretes</p>
-                <p class="bg-main-lembrete">
-                <span class="p-bold"><i class="bi bi-exclamation-triangle-fill icon-differential"></i>&nbsp&nbsp Consulta com Pedro Sampario em 7 dias.</span>
-                </p>
+                    {% for dia_faltando in dias_faltando %}
+                        {% if dia_faltando <= 7 %}
+                            <p class="bg-main-lembrete">
+                            <span class="p-bold"><i class="bi bi-exclamation-triangle-fill icon-differential"></i>&nbsp&nbsp Faltam {{dia_faltando}} dias para a sua próxima consulta </span>
+                            </p>
+                        {% endif %}
+                    {% endfor %}           
             </div>
         </div>
     </div>

@@ -19,17 +19,28 @@
         <h2>
             <span class="color-dark">Suas consultas</span>
         </h2>
-        <div class="row">
-            <div class="col-md">
-                <input type="text" name="especialidades" id="" class="form-control shadow-main-color" placeholder="Especialidades médias">
+        <form action="{% url "minhas_consultas" %}" method='GET'>
+            <div class="row">
+                <div class="col-md">
+                    <!--
+                    <input type="text" name="especialidades" id="" class="form-control shadow-main-color" placeholder="Especialidades médias">
+                    -->
+                    <select name="especialidades" class="form-select" placeholder="Especialidades">
+                        {% for especialidade in especialidades %}
+                            <option value="{{especialidade.id}}">{{especialidade}}</option>
+                        {% endfor %}
+                        <option value='' selected="selected">N/A</option>
+                    </select>
+                    
+                </div>
+                <div class="col-md">
+                    <input type="date" name="data" id="" class="form-control shadow-main-color" placeholder="Data da consulta">
+                </div>
+                <div class="col-md">
+                    <input type="submit" value="Filtrar" class="btn btn-dark-color-outline">
+                </div>
             </div>
-            <div class="col-md">
-                <input type="date" name="data" id="" class="form-control shadow-main-color" placeholder="Data da consulta">
-            </div>
-            <div class="col-md">
-                <input type="submit" value="Filtrar" class="btn btn-dark-color-outline">
-            </div>
-        </div>
+        </form>
         <br>
         <div class="list-minhas-consultas">
             <table class="table">
@@ -42,16 +53,17 @@
                 </thead>
                 <tbody>
                     {% for consulta in minhas_consultas %}
-                    <tr>
-                        <td>
-                            <a href="{% url "consulta" consulta.id %}">Dr(a). {{consulta.data_aberta.user}}</a>
-                        </td>
-                        <td>{{consulta.get_status_display}}</td>
-                        <td>{{consulta.data_aberta.data}}</td>
-                    </tr>
+                        <tr>
+                            <td>
+                                <a href="{% url "consulta" consulta.id %}">Dr(a). {{consulta.data_aberta.user}}</a>
+                            </td>
+                            <td>{{consulta.get_status_display}}</td>
+                            <td>{{consulta.data_aberta.data}}</td>
+                        </tr>
                     {% endfor %}
                 </tbody>
             </table>
+
         </div>
     </div>  
 

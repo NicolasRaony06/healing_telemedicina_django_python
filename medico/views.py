@@ -4,9 +4,18 @@ from .models import Especialidades, DadosMedico, is_medico, DatasAbertas
 from django.contrib.messages import constants, add_message
 from datetime import datetime, timedelta
 from paciente.models import Consulta, Documento
+from django.contrib.auth.decorators import login_required
 
-
+@login_required
 def cadastro_medico(request):
+    '''
+    Para fazer a verificação se o usuário estar logado, além do @login_required, também tem como fazer assim:
+
+    if not request.user.username:
+        return redirect('/usuarios/login')
+        
+    '''
+    
     if is_medico(request.user):
         add_message(request, constants.WARNING, 'Você já está cadastrado!')
         return redirect('/medicos/abrir_horario')
@@ -50,8 +59,11 @@ def cadastro_medico(request):
         return redirect('/medicos/abrir_horario')
 
 def abrir_horario(request):
+    if not request.user.username:
+        return redirect('/usuarios/login')
+    
     if not is_medico(request.user):
-        add_message(request, constants.WARNING, 'Somente médicos podem acessar o agendamento')
+        add_message(request, constants.WARNING, 'Somente médicos podem acessar essa página.')
         return redirect('/usuarios/logout')
     
     if request.method == 'GET':
@@ -77,9 +89,12 @@ def abrir_horario(request):
         return redirect('/medicos/abrir_horario')
 
 def consultas_medico(request):
+    if not request.user.username:
+        return redirect('/usuarios/login')
+
     if not is_medico(request.user):
         add_message(request, constants.WARNING, 'Somente médicos podem acessar essa página.')
-        return redirect('/usuarios/sair')
+        return redirect('/usuarios/logout')
     
     hoje = datetime.now().date()
 
@@ -89,9 +104,12 @@ def consultas_medico(request):
     return render(request, 'consultas_medico.html', {'consultas_hoje': consultas_hoje, 'consultas_restantes': consultas_restantes, 'is_medico': is_medico(request.user)})
 
 def consulta_area_medico(request, id_consulta):
+    if not request.user.username:
+        return redirect('/usuarios/login')
+    
     if not is_medico(request.user):
         add_message(request, constants.WARNING, 'Somente médicos podem acessar essa página.')
-        return redirect('/usuarios/sair')
+        return redirect('/usuarios/logout')
     
     if request.method == 'GET':
         consulta = Consulta.objects.get(id=id_consulta)
@@ -119,9 +137,12 @@ def consulta_area_medico(request, id_consulta):
         return redirect(f'/medicos/consulta_area_medico/{id_consulta}/')
     
 def finalizar_consulta(request, id_consulta):
+    if not request.user.username:
+        return redirect('/usuarios/login')
+    
     if not is_medico(request.user):
         add_message(request, constants.WARNING, 'Somente médicos podem acessar essa página.')
-        return redirect('/usuarios/sair')
+        return redirect('/usuarios/logout')
     
     consulta = Consulta.objects.get(id=id_consulta)
 
@@ -139,9 +160,12 @@ def finalizar_consulta(request, id_consulta):
     #print(consulta.data_aberta.user, request.user.username)
 
 def add_documento(request, id_consulta):
+    if not request.user.username:
+        return redirect('/usuarios/login')
+
     if not is_medico(request.user):
         add_message(request, constants.WARNING, 'Somente médicos podem acessar essa página.')
-        return redirect('/usuarios/sair')
+        return redirect('/usuarios/logout')
     
     consulta = Consulta.objects.get(id=id_consulta)
     print(consulta.data_aberta.user.id, request.user.id)
@@ -167,6 +191,8 @@ def add_documento(request, id_consulta):
 
         add_message(request, constants.SUCCESS, 'Documento enviado com sucesso!')
         return redirect(f"/medicos/consulta_area_medico/{id_consulta}/")
+    
+
 
     
 

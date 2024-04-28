@@ -24,4 +24,5 @@ class Documento(models.Model):
     documento = models.FileField(upload_to='documentos')
 
     def __str__(self):
-        return self.titulo    
+        return self.titulo
+
